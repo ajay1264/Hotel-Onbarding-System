@@ -15,6 +15,7 @@ const guestSchema = new mongoose.Schema(
     address: {
       type: String,
       required: true,
+      trim: true,
     },
     purpose: {
       type: String,

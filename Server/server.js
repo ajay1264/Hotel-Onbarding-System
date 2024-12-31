@@ -5,6 +5,7 @@ import cors from 'cors';
 import path from 'path';
 import hotelRoutes from './routes/hotelRoutes.js';
 import guestRoutes from './routes/guestRoutes.js';
+// import { getGuests, createGuest, updateGuest } from './controllers/guestController.js';
 
 // Load environment variables
 dotenv.config();
@@ -21,7 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware setup
 app.use(cors());
-app.use(express.json()); // Built-in express middleware for parsing JSON
+app.use(express.json()); 
 
 // MongoDB connection
 mongoose
@@ -31,12 +32,15 @@ mongoose
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err.message);
-    process.exit(1);  // Exit process if the database connection fails
+    process.exit(1);  
   });
 
 // Routes setup
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/guests', guestRoutes);
+// app.get('/api/guests', getGuests);
+// app.post('/api/guests', createGuest);
+// app.put('/api/guests/:id', updateGuest);
 
 // Port setup
 const PORT = process.env.PORT || 5000;
