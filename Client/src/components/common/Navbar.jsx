@@ -12,6 +12,12 @@ const Navbar = () => {
               Login
             </Link>
           </li>
+                    {/* New Guest Registration Link on the left */}
+                    <li>
+            <Link to="/guest-registration" className="hover:underline">
+              Guest Registration
+            </Link>
+          </li>
           <li>
             <Link to="/main-admin" className="hover:underline">
               Main Admin

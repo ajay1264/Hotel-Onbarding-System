@@ -44,4 +44,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get hotel by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;  // Get hotel ID from request params
+
+  try {
+    const hotel = await Hotel.findById(id);  // Fetch hotel by ID from the database
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    res.json(hotel);  // Return the hotel data
+  } catch (err) {
+    console.error('Error fetching hotel:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;

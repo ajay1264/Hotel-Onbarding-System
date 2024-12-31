@@ -4,15 +4,22 @@ import Guest from '../models/Guest.js';
 export const getGuests = async (req, res) => {
   try {
     const guests = await Guest.find().populate('hotel');  // Assuming each guest has a reference to the hotel
-    res.json(guests);
+    res.status(200).json(guests);  // Returning status code 200 for successful request
   } catch (err) {
+    console.error(err); // Log the error for debugging
     res.status(500).json({ message: 'Error fetching guests' });
   }
 };
 
 // Create a new guest
 export const createGuest = async (req, res) => {
-  const { fullName, mobile, email, purpose, hotelId } = req.body;
+  const { fullName, mobile, email, purpose, hotelId, stayFrom, stayTo, address, idProof } = req.body;
+  
+  // Validating required fields
+  if (!fullName || !mobile || !email || !hotelId || !purpose) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
   try {
     const newGuest = new Guest({
       fullName,
@@ -20,10 +27,16 @@ export const createGuest = async (req, res) => {
       email,
       purpose,
       hotel: hotelId,
+      stayFrom,
+      stayTo,
+      address,
+      idProof,
     });
+
     await newGuest.save();
-    res.status(201).json(newGuest);
+    res.status(201).json(newGuest);  // Successfully created, return the new guest with status 201
   } catch (err) {
+    console.error(err); // Log the error for debugging
     res.status(500).json({ message: 'Error creating guest' });
   }
 };
@@ -32,10 +45,18 @@ export const createGuest = async (req, res) => {
 export const updateGuest = async (req, res) => {
   const guestId = req.params.id;
   const updatedData = req.body;
+
+  // Validate if the guest exists
   try {
     const updatedGuest = await Guest.findByIdAndUpdate(guestId, updatedData, { new: true });
-    res.json(updatedGuest);
+
+    if (!updatedGuest) {
+      return res.status(404).json({ message: 'Guest not found' });
+    }
+
+    res.status(200).json(updatedGuest);  // Successfully updated, return the updated guest
   } catch (err) {
+    console.error(err); // Log the error for debugging
     res.status(500).json({ message: 'Error updating guest' });
   }
 };

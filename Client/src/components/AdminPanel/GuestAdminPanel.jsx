@@ -23,6 +23,16 @@ const GuestAdminPanel = () => {
     fetchGuests();
   }, []);  // Empty dependency array to run this only once when the component mounts
 
+  const handleEdit = (guestId) => {
+    console.log(`Edit guest with ID: ${guestId}`);
+    // Implement edit functionality
+  };
+
+  const handleView = (guestId) => {
+    console.log(`View guest with ID: ${guestId}`);
+    // Implement view functionality
+  };
+
   if (loading) return <div>Loading...</div>;  // Show loading state
   if (error) return <div>{error}</div>;  // Show error message if any
 
@@ -36,6 +46,7 @@ const GuestAdminPanel = () => {
             <th className="border border-gray-300 p-2">Mobile Number</th>
             <th className="border border-gray-300 p-2">Email</th>
             <th className="border border-gray-300 p-2">Purpose of Visit</th>
+            <th className="border border-gray-300 p-2">Address</th> {/* Added address column */}
             <th className="border border-gray-300 p-2">Actions</th>
           </tr>
         </thead>
@@ -46,11 +57,18 @@ const GuestAdminPanel = () => {
               <td className="border border-gray-300 p-2">{guest.mobile}</td>
               <td className="border border-gray-300 p-2">{guest.email}</td>
               <td className="border border-gray-300 p-2">{guest.purpose}</td>
+              <td className="border border-gray-300 p-2">{guest.address || 'N/A'}</td> {/* Display address */}
               <td className="border border-gray-300 p-2">
-                <button className="bg-yellow-400 text-white px-2 py-1 rounded mr-2">
+                <button
+                  onClick={() => handleEdit(guest._id)}
+                  className="bg-yellow-400 text-white px-2 py-1 rounded mr-2"
+                >
                   Edit
                 </button>
-                <button className="bg-green-500 text-white px-2 py-1 rounded">
+                <button
+                  onClick={() => handleView(guest._id)}
+                  className="bg-green-500 text-white px-2 py-1 rounded"
+                >
                   View
                 </button>
               </td>

@@ -7,6 +7,8 @@ import MainAdminPage from './pages/MainAdminPage';
 import GuestAdminPage from './pages/GuestAdminPage';
 import GuestLandingPage from './pages/GuestLandingPage';
 import HotelPage from './components/HotelPage'; // New component to display hotel details
+import GuestForm from './components/GuestForm/GuestForm';
+import ThankYouPage from './components/GuestForm/ThankYouPage';
 
 const App = () => {
   return (
@@ -30,7 +32,13 @@ const App = () => {
           <Route path="/guest/:hotelId" element={<GuestLandingPage />} />
 
           {/* Hotel Details Page */}
-          <Route path="/main-admin/hotel/:id" element={<HotelPage />} /> {/* New route for hotel details */}
+          <Route path="/main-admin/hotel/:id" element={<HotelPage />} /> 
+
+        {/* Guest form */}
+        <Route path="/guest-registration" element={<GuestForm/>}/>
+
+        {/* Thank You Page */}
+        <Route path="/thank-you" element={<ThankYouPage />} />
         </Routes>
       </div>
 
