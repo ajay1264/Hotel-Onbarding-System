@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import QRCode from 'react-qr-code'; // Importing QRCode component for generating QR codes
+import QRCode from 'react-qr-code';
 
 const MainAdminPanel = () => {
   const [hotels, setHotels] = useState([]);
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);  // For loading state
+  const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState('');
 
   // Fetch hotels from the server
   useEffect(() => {
@@ -28,35 +30,63 @@ const MainAdminPanel = () => {
   // Handle form submission for adding a new hotel
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);  // Show loading state
+    setLoading(true);
+
+    // Log the form data before submitting
+    console.log('Form data before submission:', { name, address, selectedFile });
+
+    // Validate required fields
+    if (!name || !address || !selectedFile) {
+      setMessage('All fields are required.');
+      setLoading(false);
+      return;
+    }
 
     const newHotel = {
       name,
-      address
+      address,
+      image: selectedFile,
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/hotels/add', newHotel, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('address', address);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
+
+      const response = await axios.post('http://localhost:5000/api/hotels/add', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       // Show success message and reset the form
       setMessage('Hotel added successfully');
       setName('');
       setAddress('');
-      setHotels([...hotels, response.data]);  // Add the new hotel to the list
+      setSelectedFile(null); 
+      setPreview(''); 
+      setHotels([...hotels, response.data]); // Add the new hotel to the list
     } catch (error) {
-      // Log the error response and show detailed error message
       console.error('Error adding hotel:', error.response || error.message);
-      if (error.response) {
-        setMessage(`Error: ${error.response.data.message || error.response.statusText}`);
-      } else {
-        setMessage('Failed to add hotel due to unknown error');
-      }
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error headers:', error.response?.headers);
+      setMessage('Failed to add hotel');
     } finally {
-      setLoading(false);  // Hide loading state
+      setLoading(false);
+    }
+  };
+
+  // Handle file selection and preview
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+
+    // Update preview
+    if (file) {
+      const previewURL = URL.createObjectURL(file);
+      setPreview(previewURL);
     }
   };
 
@@ -91,10 +121,21 @@ const MainAdminPanel = () => {
             />
           </div>
 
+          {/* File Upload */}
+          <div className="flex flex-col">
+            <label className="font-semibold">Add Image</label>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="border border-gray-300 p-2 rounded"
+            />
+            {preview && <img src={preview} alt="Preview" className="w-20 h-20 mt-2" />}
+          </div>
+
           <button
             type="submit"
             className="bg-blue-500 text-white py-2 px-4 rounded"
-            disabled={loading}  // Disable button while loading
+            disabled={loading}
           >
             {loading ? 'Adding Hotel...' : 'Add Hotel'}
           </button>
@@ -107,6 +148,7 @@ const MainAdminPanel = () => {
           <tr className="bg-gray-100">
             <th className="px-4 py-2 text-left">Hotel Name</th>
             <th className="px-4 py-2 text-left">Address</th>
+            <th className="px-4 py-2 text-left">Logo</th>
             <th className="px-4 py-2 text-left">QR Code</th>
             <th className="px-4 py-2 text-left">Actions</th>
           </tr>
@@ -117,11 +159,16 @@ const MainAdminPanel = () => {
               <td className="px-4 py-2">{hotel.name}</td>
               <td className="px-4 py-2">{hotel.address}</td>
               <td className="px-4 py-2">
-                {/* QR Code for each hotel */}
+                {hotel.image ? (
+                   <img src={`http://localhost:5000${hotel.image}`} alt="Logo" className="w-20 h-20" />
+                ) : (
+                  <p>No logo</p>
+                )}
+              </td>
+              <td className="px-4 py-2">
                 <QRCode value={`http://localhost:5173/main-admin/hotel/${hotel._id}`} size={100} />
               </td>
               <td className="px-4 py-2">
-                {/* Action button to view hotel */}
                 <Link
                   to={`/main-admin/hotel/${hotel._id}`}
                   className="text-blue-500 hover:text-blue-700"

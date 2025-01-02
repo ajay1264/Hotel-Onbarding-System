@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 const HotelSchema = new mongoose.Schema(
   {
@@ -22,6 +23,10 @@ const HotelSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,  // Automatically set the update date
     },
+    image:{
+      type: String,
+      required: true
+    }
   },
   {
     timestamps: true,  // Automatically adds 'createdAt' and 'updatedAt' fields

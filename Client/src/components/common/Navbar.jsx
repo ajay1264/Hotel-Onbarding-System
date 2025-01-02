@@ -8,6 +8,11 @@ const Navbar = () => {
         <h1 className="text-xl font-bold">Digital Guest Onboarding</h1>
         <ul className="flex space-x-6">
           <li>
+            <Link to="/signup" className="hover:underline">
+              Signup
+            </Link>
+          </li>
+          <li>
             <Link to="/" className="hover:underline">
               Login
             </Link>

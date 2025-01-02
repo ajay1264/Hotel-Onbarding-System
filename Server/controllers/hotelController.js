@@ -1,20 +1,34 @@
 import Hotel from '../models/Hotel.js';
-import { generateQRCode } from '../utils/qrcode.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 // Create a new hotel
 export const createHotel = async (req, res) => {
   try {
-    const { name, address, logo } = req.body;
+    const { name, address } = req.body;
 
+    // Check if logo is uploaded
+    const logoLocalPath = req.files?.logo ? req.files.logo[0]?.path : null;
+    if (!logoLocalPath) {
+      return res.status(400).json({ message: 'Logo is required' });
+    }
+
+    // Upload logo to Cloudinary
+    const logo = await uploadOnCloudinary(logoLocalPath);
+    if (!logo) {
+      return res.status(500).json({ message: 'Error uploading logo' });
+    }
+
+    // Create a new hotel with the QR code and uploaded logo
     const hotel = new Hotel({
       name,
       address,
-      logo,
-      qrCodeURL: generateQRCode(name),  // Generate QR code for the hotel
+      qrCodeURL: req.body.qrCodeURL, // Assuming QR code is provided
+      logo: logo.url, // Save the Cloudinary URL of the logo
     });
 
     await hotel.save();
     res.status(201).json(hotel);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -46,11 +60,12 @@ export const getHotelById = async (req, res) => {
 // Update hotel details
 export const updateHotel = async (req, res) => {
   try {
-    const { name, address, logo } = req.body;
+    const { name, address } = req.body;
 
+    // Update the hotel
     const updatedHotel = await Hotel.findByIdAndUpdate(
       req.params.id,
-      { name, address, logo },
+      { name, address },
       { new: true }
     );
 

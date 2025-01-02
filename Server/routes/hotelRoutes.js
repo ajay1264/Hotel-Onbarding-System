@@ -1,32 +1,49 @@
 import express from 'express';
 import Hotel from '../models/Hotel.js';
 import qrcode from 'qrcode';
+import multer from 'multer';
+import path from 'path';    // Import path module
+import fs from 'fs';        // Import fs module
+import { upload } from '../Middleware/MulterMiddleware.js'; // Import Multer middleware
 
 const router = express.Router();
 
-// Create a new hotel
-router.post('/add', async (req, res) => {
-  const { name, address } = req.body;  // Assuming you're sending 'name' and 'address' in the request body
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');  // Store files in 'uploads' directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));  // Use unique filename
+  }
+});
 
-  // Check if fields are missing
+const uploadMiddleware = multer({ storage: storage });
+
+// Add hotel with image and QR code
+router.post('/add', uploadMiddleware.single('file'), async (req, res) => {
+  const { name, address } = req.body;
+
   if (!name || !address) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
-    // Generate QR code URL
+    // Generate QR Code URL
     const qrCodeURL = await qrcode.toDataURL(`https://example.com/hotel/${name}`);
 
-    // Create a new hotel instance
+    // Handle image upload
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';  // Get file path
+
     const newHotel = new Hotel({
       name,
       address,
       qrCodeURL,
+      image: imageUrl,  // Store image URL
     });
 
-    // Save the hotel to the database
     await newHotel.save();
-    res.status(201).json(newHotel);  // Respond with the saved hotel data
+    res.status(201).json(newHotel);  // Return created hotel with image and QR code
   } catch (err) {
     console.error('Server error:', err);
     res.status(500).json({ message: 'Server error' });
@@ -36,8 +53,8 @@ router.post('/add', async (req, res) => {
 // Get all hotels
 router.get('/', async (req, res) => {
   try {
-    const hotels = await Hotel.find();  // Fetch all hotels from the database
-    res.json(hotels);  // Return the list of hotels
+    const hotels = await Hotel.find();
+    res.json(hotels);
   } catch (err) {
     console.error('Error fetching hotels:', err);
     res.status(500).json({ message: 'Server error' });
@@ -46,14 +63,14 @@ router.get('/', async (req, res) => {
 
 // Get hotel by ID
 router.get('/:id', async (req, res) => {
-  const { id } = req.params;  // Get hotel ID from request params
+  const { id } = req.params;
 
   try {
-    const hotel = await Hotel.findById(id);  // Fetch hotel by ID from the database
+    const hotel = await Hotel.findById(id);
     if (!hotel) {
       return res.status(404).json({ message: 'Hotel not found' });
     }
-    res.json(hotel);  // Return the hotel data
+    res.json(hotel);
   } catch (err) {
     console.error('Error fetching hotel:', err);
     res.status(500).json({ message: 'Server error' });
