@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -77,7 +77,7 @@ const LoginPage = () => {
         <div className="text-center mt-4">
           <p className="text-sm">
             Don't have an account?{' '}
-            <a href="/signup" className="text-blue-500 hover:underline">Sign up here</a>
+            <Link href="/signup" className="text-blue-500 hover:underline">Sign up here</Link>
           </p>
         </div>
       </div>
