@@ -4,7 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 
 const HotelQRCode = ({ hotelId }) => {
   if (!hotelId) return "N/A";
-  const qrValue = `http://localhost:5173/main-admin/hotel/${hotelId}`;
+  const qrValue = `https://hotel-onbarding-system-server.onrender.com/main-admin/hotel/${hotelId}`;
   return (
     <div className="flex justify-center items-center">
       <QRCode value={qrValue} size={100} className="border border-gray-300 p-2" />

@@ -23,7 +23,7 @@ const GuestForm = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/hotels');
+        const response = await axios.get('https://hotel-onbarding-system-server.onrender.com/api/hotels');
         setHotels(response.data); // Set the list of hotels
       } catch (error) {
         console.error('Error fetching hotels:', error);
@@ -64,7 +64,7 @@ const GuestForm = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/guests', formData);
+      const response = await axios.post('https://hotel-onbarding-system-server.onrender.com/api/guests', formData);
       console.log('Guest registered:', response.data);
       setIsSubmitted(true); // Mark form as submitted
 

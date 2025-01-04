@@ -160,13 +160,13 @@ const MainAdminPanel = () => {
               <td className="px-4 py-2">{hotel.address}</td>
               <td className="px-4 py-2">
                 {hotel.image ? (
-                   <img src={`http://localhost:5000${hotel.image}`} alt="Logo" className="w-20 h-20" />
+                   <img src={`https://hotel-onbarding-system-server.onrender.com${hotel.image}`} alt="Logo" className="w-20 h-20" />
                 ) : (
                   <p>No logo</p>
                 )}
               </td>
               <td className="px-4 py-2">
-                <QRCode value={`http://localhost:5173/main-admin/hotel/${hotel._id}`} size={100} />
+                <QRCode value={`https://hotel-onbarding-system-server.onrender.com/main-admin/hotel/${hotel._id}`} size={100} />
               </td>
               <td className="px-4 py-2">
                 <Link

@@ -11,7 +11,7 @@ const HotelPage = () => {
     // Fetch hotel details based on the ID
     const fetchHotel = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/hotels/${id}`);
+        const response = await axios.get(`https://hotel-onbarding-system-server.onrender.com/api/hotels/${id}`);
         setHotel(response.data);
       } catch (error) {
         console.error('Error fetching hotel:', error);
@@ -44,7 +44,7 @@ const HotelPage = () => {
         <div className="flex items-center justify-center mb-8">
           {hotel.image ? (
             <img
-              src={`http://localhost:5000${hotel.image}`}
+              src={`https://hotel-onbarding-system-server.onrender.com${hotel.image}`}
               alt="Hotel Logo"
               className="w-20 h-20 rounded-full shadow-md mr-4"
             />
