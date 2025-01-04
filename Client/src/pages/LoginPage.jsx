@@ -77,7 +77,7 @@ const LoginPage = () => {
         <div className="text-center mt-4">
           <p className="text-sm">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-blue-500 hover:underline">Sign up here</Link>
+            <Link to="/signup" className="text-blue-500 hover:underline">Sign up here</Link>
           </p>
         </div>
       </div>
