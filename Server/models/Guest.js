@@ -20,7 +20,7 @@ const guestSchema = new mongoose.Schema(
     purpose: {
       type: String,
       required: true,
-      enum: ['Business', 'Personal', 'Tourist'], // Optional: You can restrict the choices to these
+      enum: ['Business', 'Personal', 'Tourist'],
     },
     stayFrom: {
       type: Date,

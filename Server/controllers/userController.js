@@ -29,12 +29,23 @@ export const signup = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      confirmPassword: hashedPassword,
     });
 
     // Save the user to the database
     await newUser.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    // Create JWT token after successful signup
+    const token = jwt.sign(
+      { userId: newUser._id, email: newUser.email },  
+      process.env.JWT_SECRET,                 
+      { expiresIn: '1h' }                       
+    );
+
+    res.status(201).json({
+      message: 'User registered successfully',
+      token,  // Send the token in response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -73,7 +84,7 @@ export const login = async (req, res) => {
     // Send the token in the response
     res.status(200).json({
       message: 'Login successful',
-      token,  
+      token,  // Send the token in response
     });
   } catch (error) {
     console.error(error);

@@ -17,11 +17,11 @@ const HotelSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,  // Automatically set the creation date
+      default: Date.now,  
     },
     updatedAt: {
       type: Date,
-      default: Date.now,  // Automatically set the update date
+      default: Date.now,
     },
     image:{
       type: String,
@@ -29,14 +29,13 @@ const HotelSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true,  // Automatically adds 'createdAt' and 'updatedAt' fields
+    timestamps: true,  
   }
 );
 
-// Optionally create an index for faster searches on the 'name' field
 HotelSchema.index({ name: 1 });
 
-// Create the Hotel model using the schema
+
 const Hotel = mongoose.model('Hotel', HotelSchema);
 
 export default Hotel;

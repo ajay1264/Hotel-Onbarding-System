@@ -2,9 +2,9 @@ import express from 'express';
 import Hotel from '../models/Hotel.js';
 import qrcode from 'qrcode';
 import multer from 'multer';
-import path from 'path';    // Import path module
-import fs from 'fs';        // Import fs module
-import { upload } from '../Middleware/MulterMiddleware.js'; // Import Multer middleware
+import path from 'path';    
+import fs from 'fs';       
+import { upload } from '../Middleware/MulterMiddleware.js'; 
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ router.post('/add', uploadMiddleware.single('file'), async (req, res) => {
     const qrCodeURL = await qrcode.toDataURL(`https://example.com/hotel/${name}`);
 
     // Handle image upload
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';  // Get file path
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';  
 
     const newHotel = new Hotel({
       name,
@@ -43,7 +43,7 @@ router.post('/add', uploadMiddleware.single('file'), async (req, res) => {
     });
 
     await newHotel.save();
-    res.status(201).json(newHotel);  // Return created hotel with image and QR code
+    res.status(201).json(newHotel);  
   } catch (err) {
     console.error('Server error:', err);
     res.status(500).json({ message: 'Server error' });

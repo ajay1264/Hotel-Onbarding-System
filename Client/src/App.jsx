@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';  // Import Toastify
-import 'react-toastify/dist/ReactToastify.css';  // Import Toastify styles
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
@@ -9,37 +9,19 @@ import LoginPage from './pages/LoginPage';
 import MainAdminPage from './pages/MainAdminPage';
 import GuestAdminPage from './pages/GuestAdminPage';
 import GuestLandingPage from './pages/GuestLandingPage';
-import HotelPage from './components/HotelPage'; // New component to display hotel details
+import HotelPage from './components/HotelPage';
 import GuestForm from './components/GuestForm/GuestForm';
 import ThankYouPage from './components/GuestForm/ThankYouPage';
-import SignupPage from './pages/SignupPage'; // Make sure this is imported
+import SignupPage from './pages/SignupPage';
+import { useAuth } from './context/authContext';
 
 const App = () => {
-  const navigate = useNavigate();
-  const [toastShown, setToastShown] = useState(false); // Track if the toast is shown
-
-  // Show toast only once when the page loads
-  useEffect(() => {
-    if (!toastShown) {
-      toast.info('Please sign up first!');
-      setToastShown(true);
-      navigate('/signup'); // Redirect to the signup page after showing the toast
-    }
-  }, [navigate, toastShown]);
-
-  // Handle the toast on navbar clicks, excluding the LoginPage
-  const handleAdminClick = () => {
-    if (!toastShown) {
-      toast.info('Please sign up first!');
-      setToastShown(true);
-    }
-    navigate('/signup'); // Redirect to the signup page after showing the toast
-  };
+  const { user } = useAuth(); 
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
-      <Navbar onAdminClick={handleAdminClick} />
+      <Navbar />
 
       {/* Main Content */}
       <div className="flex-grow">
@@ -50,11 +32,17 @@ const App = () => {
           {/* Signup Page */}
           <Route path="/signup" element={<SignupPage />} />
 
-          {/* Main Admin Dashboard */}
-          <Route path="/main-admin" element={<MainAdminPage />} />
+          {/* Main Admin Dashboard (Protected Route) */}
+          <Route
+            path="/main-admin"
+            element={user ? <MainAdminPage /> : <Navigate to="/signup" />}
+          />
 
-          {/* Guest Admin Dashboard */}
-          <Route path="/guest-admin" element={<GuestAdminPage />} />
+          {/* Guest Admin Dashboard (Protected Route) */}
+          <Route
+            path="/guest-admin"
+            element={user ? <GuestAdminPage /> : <Navigate to="/signup" />}
+          />
 
           {/* Guest Landing Page */}
           <Route path="/guest/:hotelId" element={<GuestLandingPage />} />
