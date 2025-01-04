@@ -21,7 +21,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post('https://hotel-onbarding-system-server.onrender.com/api/auth/login', { email, password });
       if (response.status === 200) {
         login(response.data.token);  // Save the token and set the user in context
         toast.success('Login successful');
