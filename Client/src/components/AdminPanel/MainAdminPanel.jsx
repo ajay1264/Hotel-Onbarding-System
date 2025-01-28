@@ -16,7 +16,7 @@ const MainAdminPanel = () => {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const response = await axios.get('https://hotel-onbarding-system-server.onrender.com/hotels/');
+        const response = await axios.get('https://hotel-onbarding-system-server.onrender.com/api/hotels');
         setHotels(response.data);
       } catch (error) {
         console.error('Error fetching hotels:', error);
@@ -56,7 +56,7 @@ const MainAdminPanel = () => {
         formData.append('file', selectedFile);
       }
 
-      const response = await axios.post('http://localhost:5000/api/hotels/add', formData, {
+      const response = await axios.post('https://hotel-onbarding-system-server.onrender.com/api/hotels/api/hotels/add', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
